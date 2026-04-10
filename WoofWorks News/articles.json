@@ -1,0 +1,35 @@
+[
+    {
+        "title": "DIP System set to be replaced with the new WEIN system in 2026",
+        "category": "Company News",
+        "metaIconText": "WW",
+        "metaAuthor": "WoofWorks Team",
+        "metaDate": "20/12/2025",
+        "imageUrl": "images/diptowein.png",
+        "detailsUrl": "articles/placeholder.html",
+        "views": "Unknown",
+        "likes": "Unknown"
+    },
+    {
+        "title": "WoofWorks Gets its first Skid Steer",
+        "category": "Skid Steer",
+        "metaIconText": "WO",
+        "metaAuthor": "WoofWorks Official",
+        "metaDate": "8/12/2025",
+        "imageUrl": "images/skidsteer.png",
+        "detailsUrl": "articles/placeholder.html",
+        "views": "Unknown",
+        "likes": "Unknown"
+    },
+    {
+        "title": "WoofWorks News Site Up and Running! - More News coming soon!",
+        "category": "Skid Steer",
+        "metaIconText": "WO",
+        "metaAuthor": "WoofWorks Official",
+        "metaDate": "8/12/2025",
+        "imageUrl": "images/welcome.png",
+        "detailsUrl": "articles/placeholder.html",
+        "views": "Unknown",
+        "likes": "Unknown"
+    }
+]

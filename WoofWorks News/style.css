@@ -1,0 +1,151 @@
+/* --- Global Styles and Colors --- */
+:root {
+    --primary-orange: rgb(202, 30, 255);; /* A vibrant orange */
+    --light-white: #ffffff;
+    --text-dark: #333;
+    --text-light: #555;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "ProggyClean", monospace;
+    background-color: var(--light-white);
+    color: var(--text-dark);
+}
+
+/* --- Header & Logo --- */
+.header {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px 30px;
+    margin-bottom: 20px;
+}
+
+.logo-container h1 {
+    color: var(--primary-orange);
+    font-size: 2em;
+    font-weight: bold;
+    /* You can add a background image here for a logo */
+}
+
+/* --- News Grid Layout --- */
+.news-grid {
+    display: grid;
+    /* Sets up a 4-column layout */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 0 30px 40px;
+    max-width: 1400px; /* Optional: limits the max width of the content */
+    margin: 0 auto; /* Centers the grid */
+}
+
+/* --- Individual News Block Styling --- */
+.news-block {
+    background-color: white;
+    border-radius: 0px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensures the image doesn't break the rounded corners */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    text-decoration: none; /* Removes underline from the <a> tag */
+    color: inherit; /* Inherits text color */
+    cursor: pointer;
+}
+
+.news-block:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.news-image-container {
+    width: 100%;
+    /* * Setting the aspect ratio. A common one for featured images is 16/9.
+     * You can change this to 4/3 or 1/1 if you prefer a different shape.
+     */
+    aspect-ratio: 16 / 9; 
+    overflow: hidden; 
+}
+
+.news-image {
+    width: 100%;
+    height: 100%;
+    /* * object-fit: cover; (Current setting, fills space, but crops ends) 
+     * object-fit: contain; (Will show the whole image, but may leave bars)
+     */
+    object-fit: cover; 
+    display: block;
+}
+
+/* Content below the image */
+.news-content {
+    padding: 15px;
+}
+
+/* The 'Skid Steer' orange tag style */
+.category-tag {
+    display: inline-block;
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Bold Title like 'SV VT100' */
+.news-title {
+    font-size: 1.5em;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+    line-height: 1.2;
+}
+
+/* Small text below the image (like 'FS Miner' and date) */
+.news-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.meta-icon {
+    width: 30px; /* Size of the small icon/logo */
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc; /* Placeholder background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7em;
+    color: white;
+    font-weight: bold;
+}
+
+.meta-info {
+    font-size: 0.9em;
+    color: var(--text-light);
+}
+
+/* Footer-like section for views/likes (optional) */
+.news-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 15px;
+    border-top: 1px solid #eee;
+    font-size: 0.9em;
+    color: var(--text-light);
+}
+
+.views, .likes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 15px;
+}
