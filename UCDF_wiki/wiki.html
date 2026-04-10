@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WoofWorks Wiki</title>
+
+  <!-- Your CSS -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      font-family: sans-serif;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #111;
+      color: white;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    .sidebar a:hover {
+      color: white;
+    }
+
+    .content {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🔵 SIDEBAR -->
+  <div class="sidebar">
+    <h2>Wiki</h2>
+
+    <!-- 🔧 EDIT THIS LIST -->
+    <a onclick="loadPage('introduction.md')">Introduction</a>
+
+  </div>
+
+  <!-- 🟢 CONTENT -->
+  <div class="content" id="content">
+    <h1>Welcome</h1>
+    <p>Select a page from the sidebar.</p>
+  </div>
+
+  <script>
+    function loadPage(page) {
+      fetch("wiki/" + page)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Page not found");
+          }
+          return response.text();
+        })
+        .then(md => {
+          document.getElementById("content").innerHTML = marked.parse(md);
+        })
+        .catch(err => {
+          document.getElementById("content").innerHTML = "<h1>Error</h1><p>" + err.message + "</p>";
+        });
+    }
+  </script>
+
+</body>
+</html> 
