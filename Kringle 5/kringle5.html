@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kringle 5 Tiny Computer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS STYLES --- */
+        body {
+            background: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Tiny5', sans-serif;
+        }
+
+        /* The Virtual Monitor Shell */
+        .monitor {
+            width: 80vw;
+            max-width: 700px;
+            height: 60vh;
+            background: #050505;
+            border: 12px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* CRT Scanline Overlay */
+        .monitor::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Terminal Text Styling */
+        #terminal {
+            color: #4df34d;
+            text-shadow: 0 0 4px rgba(77, 243, 77, 0.6);
+            font-size: 24px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .header { margin-bottom: 2px; }
+        .version { margin-bottom: 15px; opacity: 0.7; font-size: 0.8em; }
+        .welcome { margin-bottom: 20px; }
+
+        #history {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            scrollbar-width: none; /* Firefox */
+        }
+        #history::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .prompt { margin-right: 12px; }
+
+        input {
+            background: transparent;
+            border: none;
+            color: #4df34d;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            width: 100%;
+            text-transform: uppercase;
+            caret-color: #4df34d;
+        }
+
+        /* Subtle flicker animation */
+        @keyframes flicker {
+            0% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+        .monitor { animation: flicker 0.1s infinite; }
+    </style>
+</head>
+<body>
+
+    <div class="monitor">
+        <div id="terminal">
+            <div class="header">KRINGLE 5 TINY COMPUTER</div>
+            <div class="version">VERSION 1.0</div>
+            <div class="welcome">Hello! Type 'help' for help.</div>
+            
+            <div id="history"></div>
+            
+            <div class="input-line">
+                <span class="prompt">></span>
+                <input type="text" id="command-input" autofocus autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+        const input = document.getElementById('command-input');
+        const history = document.getElementById('history');
+
+        // Handle command submission
+        let commandBuffer = [];
+        let historyIndex = -1;
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = input.value.trim();
+                if (command !== "") {
+                    commandBuffer.push(command);
+                    historyIndex = commandBuffer.length;
+                    executeCommand(command);
+                }
+                input.value = '';
+            } else if (e.key === 'ArrowUp') {
+                if (commandBuffer.length > 0 && historyIndex > 0) {
+                    historyIndex--;
+                    input.value = commandBuffer[historyIndex];
+                }
+                e.preventDefault();
+            } else if (e.key === 'ArrowDown') {
+                if (commandBuffer.length > 0 && historyIndex < commandBuffer.length - 1) {
+                    historyIndex++;
+                    input.value = commandBuffer[historyIndex];
+                } else if (historyIndex === commandBuffer.length - 1) {
+                    historyIndex++;
+                    input.value = '';
+                }
+                e.preventDefault();
+            }
+        });
+
+        // Ensure the input stays focused
+        document.addEventListener('click', () => input.focus());
+
+        async function executeCommand(cmd) {
+            // 1. Show the command in history
+            const userLine = document.createElement('div');
+            userLine.innerHTML = `<span style="opacity:0.5">> ${cmd.toUpperCase()}</span>`;
+            history.appendChild(userLine);
+
+            // 2. Logic for responses
+            const response = document.createElement('div');
+            const cleanCmd = cmd.trim().toLowerCase();
+            const parts = cleanCmd.split(/\s+/);
+            const mainCmd = parts[0];
+            const arg = parts.slice(1).join(' ');
+
+            switch(mainCmd) {
+                case 'help':
+                    response.innerText = 'COMMANDS: HELP, CLS, ABOUT, RUN {GAME.KR5}, REBOOT';
+                    break;
+                case 'cls':
+                    history.innerHTML = '';
+                    return;
+                case 'about':
+                    response.innerText = 'KRINGLE 5 IS A 16-BIT FANTASY ARCHITECTURE BUILT FOR NORDIC CODING.';
+                    break;
+                case 'run':
+                    if (!arg) {
+                        response.innerText = 'USAGE: RUN {GAME.KR5}';
+                        break;
+                    }
+                    // Only allow .kr5 extension
+                    if (!arg.endsWith('.kr5')) {
+                        response.innerText = 'ERROR: ONLY .KR5 FILES SUPPORTED.';
+                        break;
+                    }
+                    // Try to fetch the file from games/ folder
+                    try {
+                        // Try to fetch the file (simulate loading)
+                        const res = await fetch('games/' + arg);
+                        if (res.ok) {
+                            response.innerText = `Loaded ${arg.toUpperCase()} successfully.`;
+                        } else {
+                            response.innerText = `ERROR: ${arg.toUpperCase()} NOT FOUND IN GAMES/`;
+                        }
+                    } catch (e) {
+                        response.innerText = `ERROR: ${arg.toUpperCase()} NOT FOUND IN GAMES/`;
+                    }
+                    break;
+                case 'reboot':
+                    location.reload();
+                    return;
+                default:
+                    response.innerText = `SYNTAX ERROR: ${mainCmd.toUpperCase()}`;
+            }
+            history.appendChild(response);
+            // Auto-scroll history to bottom
+            history.scrollTop = history.scrollHeight;
+        }
+    </script>
+</body>
+</html>
