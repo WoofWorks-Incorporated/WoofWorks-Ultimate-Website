@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTT Vehicle Explorer</title>
+    <link rel="stylesheet" href="../BarkEngine36/styles/styles.css">
+</head>
+<body>
+    <script
+      defer
+      crossorigin="anonymous"
+      data-clerk-publishable-key="pk_test_Y2xvc2luZy1wZXJjaC0xOC5jbGVyay5hY2NvdW50cy5kZXYk"
+      src="https://closing-perch-18.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+      type="text/javascript">
+    </script>
+
+    <center>
+        <img src="../BarkEngine36/mtttext1.png">
+        <p>Made With the BarkEngine (v0.36!)</p>
+        <hr>
+
+        <h2>MTT Vehicle Explorer</h2>
+
+        <div id="auth-section">
+            <div id="signed-out-content">
+                <p>You're currently not logged into your MTT account. Changes made here will not be saved.</p>
+                <div id="sign-in-button"></div>
+            </div>
+
+            <div id="signed-in-content" style="display: none;">
+                <p>Welcome back! You are logged in to your MTT account!.</p>
+                <div id="user-button"></div>
+            </div>
+        </div>
+
+        <br>
+        <strong>Vehicles:</strong>
+        <table>
+            <tr>
+                <th>Vehicle Name</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>Kamov Ka-27</td>
+                <td>$1.5 Million</td>
+                <td>Helicopter</td>
+                <td><button>Purchase</button><button>Sell</button><button>Lease</button><button>Details</button></td>
+            </tr>
+            <tr>
+                <td>Boeing MH-6 Little Bird</td>
+                <td>$8.5 Million</td>
+                <td>Helicopter</td>
+                <td><button>Purchase</button><button>Sell</button><button>Lease</button><button>Details</button></td>
+            </tr>
+        </table>
+
+        <footer>
+            <p>Copyright WoofWorks Inc 2026</p>
+        </footer>
+    </center>
+
+    <script>
+    const initializeClerk = async () => {
+        await Clerk.load({
+            appearance: {
+                variables: {
+                    // This tells Clerk to use your local font
+                    fontFamily: '"ProggyClean", monospace',
+                }
+            }
+        });
+
+        const signedInContent = document.getElementById('signed-in-content');
+        const signedOutContent = document.getElementById('signed-out-content');
+
+        if (Clerk.user) {
+            signedInContent.style.display = 'block';
+            signedOutContent.style.display = 'none';
+            Clerk.mountUserButton(document.getElementById('user-button'));
+        } else {
+            signedInContent.style.display = 'none';
+            signedOutContent.style.display = 'block';
+            Clerk.mountSignIn(document.getElementById('sign-in-button'));
+        }
+    };
+
+    if (window.Clerk) {
+        initializeClerk();
+    } else {
+        window.addEventListener('load', initializeClerk);
+    }
+</script>
+</body>
+</html>
