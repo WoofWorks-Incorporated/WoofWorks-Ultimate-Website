@@ -46,6 +46,13 @@ label {
   color: rgb(0, 0, 0);
   font-family: "ProggyClean", monospace;
 }
+table {
+  color: rgb(0, 0, 0);
+  font-family: "ProggyClean", monospace;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: rgba(0,0,0,0.2);
+}
 #mainviewport {
     margin: 0 auto;
     width: 600px; /* slightly wider for better view */
