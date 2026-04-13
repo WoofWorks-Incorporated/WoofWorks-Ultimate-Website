@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTT Vehicle Explorer</title>
     <link rel="stylesheet" href="../BarkEngine36/styles/styles.css">
+    <style>
+        /* Ensuring the images stay the size you requested */
+        .vehicle-img {
+            width: 150px;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -16,25 +27,17 @@
         <h2>MTT Vehicle Explorer</h2>
         <br>
         <strong>Vehicles:</strong>
-        <table>
-            <tr>
-                <th>Vehicle Name</th>
-                <th>Price</th>
-                <th>Type</th>
-                <th>Action</th>
-            </tr>
-            <tr>
-                <td>Kamov Ka-27</td>
-                <td>$1.5 Million</td>
-                <td>Helicopter</td>
-                <td><button>Purchase</button><button>Sell</button><button>Lease</button><button>Details</button></td>
-            </tr>
-            <tr>
-                <td>Boeing MH-6 Little Bird</td>
-                <td>$8.5 Million</td>
-                <td>Helicopter</td>
-                <td><button>Purchase</button><button>Sell</button><button>Lease</button><button>Details</button></td>
-            </tr>
+        <table id="vehicle-table">
+            <thead>
+                <tr>
+                    <th>Image</th> <th>Vehicle Name</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="vehicle-body">
+                </tbody>
         </table>
 
         <footer>
@@ -43,35 +46,46 @@
     </center>
 
     <script>
-    const initializeClerk = async () => {
-        await Clerk.load({
-            appearance: {
-                variables: {
-                    // This tells Clerk to use your local font
-                    fontFamily: '"ProggyClean", monospace',
-                }
+        async function loadVehicles() {
+            try {
+                const response = await fetch('vehicles.csv');
+                const data = await response.text();
+
+                const rows = data.split('\n').slice(1);
+                const tableBody = document.getElementById('vehicle-body');
+
+                rows.forEach(row => {
+                    if (row.trim() === "") return;
+
+                    // 1. Split the row (Name, Price, Type, Image)
+                    const [name, price, type, imageName] = row.split(',');
+
+                    // 2. Create the row
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <img src="vehicle_images/${imageName.trim()}" 
+                                 alt="${name}" 
+                                 class="vehicle-img">
+                        </td>
+                        <td>${name}</td>
+                        <td>${price}</td>
+                        <td>${type}</td>
+                        <td>
+                            <button>Purchase</button>
+                            <button>Sell</button>
+                            <button>Lease</button>
+                            <button>Details</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Error loading CSV:", error);
             }
-        });
-
-        const signedInContent = document.getElementById('signed-in-content');
-        const signedOutContent = document.getElementById('signed-out-content');
-
-        if (Clerk.user) {
-            signedInContent.style.display = 'block';
-            signedOutContent.style.display = 'none';
-            Clerk.mountUserButton(document.getElementById('user-button'));
-        } else {
-            signedInContent.style.display = 'none';
-            signedOutContent.style.display = 'block';
-            Clerk.mountSignIn(document.getElementById('sign-in-button'));
         }
-    };
 
-    if (window.Clerk) {
-        initializeClerk();
-    } else {
-        window.addEventListener('load', initializeClerk);
-    }
-</script>
+        window.onload = loadVehicles;
+    </script>
 </body>
 </html>

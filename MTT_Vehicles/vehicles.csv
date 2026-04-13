@@ -1,0 +1,57 @@
+Name,Price,Type,Image
+Kamov Ka-27,$1.5 Million,Helicopter,kamov_ka27.png
+Boeing MH-6 Little Bird,$8.5 Million,Helicopter,boeing_mh6.png
+Airbus H160,$14 Million,Helicopter,airbus_h160.png
+Bell UH-1 Huey,$2 Million,Helicopter,bell_uh1.png
+Sikorsky UH-60 Black Hawk,$21 Million,Helicopter,sikorsky_uh60.png
+Mil Mi-8,$15 Million,Helicopter,mil_mi8.png
+Mil Mi-26,$25 Million,Helicopter,mil_mi26.png
+Robinson R44,$0.5 Million,Helicopter,robinson_r44.png
+Bell 206 JetRanger,$1.2 Million,Helicopter,bell_206.png
+Eurocopter EC135,$6 Million,Helicopter,eurocopter_ec135.png
+Cessna 172,$0.4 Million,Plane,cessna_172.png
+Cessna 208 Caravan,$2.5 Million,Plane,cessna_208.png
+Beechcraft King Air 350,$7 Million,Plane,beechcraft_king_air_350.png
+Pilatus PC-12,$5 Million,Plane,pilatus_pc12.png
+Airbus A320,$101 Million,Plane,airbus_a320.png
+Boeing 737-800,$106 Million,Plane,boeing_737_800.png
+Boeing 747-8,$418 Million,Plane,boeing_747_8.png
+Airbus A380,$445 Million,Plane,airbus_a380.png
+Lockheed Martin F-22 Raptor,$150 Million,Plane,lockheed_martin_f22.png
+Lockheed Martin F-35 Lightning II,$80 Million,Plane,lockheed_martin_f35.png
+Dassault Rafale,$100 Million,Plane,dassault_rafale.png
+Eurofighter Typhoon,$120 Million,Plane,eurofighter_typhoon.png
+Fairchild Republic A-10 Thunderbolt II,$18 Million,Plane,fairchild_republic_a10.png
+Ford F-150,$0.05 Million,Car,ford_f150.png
+Toyota Hilux,$0.04 Million,Car,toyota_hilux.png
+Toyota Land Cruiser,$0.09 Million,Car,toyota_land_cruiser.png
+Nissan Patrol,$0.08 Million,Car,nissan_patrol.png
+Jeep Wrangler,$0.06 Million,Car,jeep_wrangler.png
+Tesla Model S,$0.09 Million,Car,tesla_model_s.png
+BMW M3,$0.08 Million,Car,bmw_m3.png
+Lamborghini Aventador,$0.5 Million,Car,lamborghini_aventador.png
+Bugatti Chiron,$3 Million,Car,bugatti_chiron.png
+Kenworth W900,$0.18 Million,Truck,kenworth_w900.png
+Volvo FH16,$0.2 Million,Truck,volvo_fh16.png
+Scania R730,$0.19 Million,Truck,scania_r730.png
+Mack Anthem,$0.17 Million,Truck,mack_anthem.png
+Caterpillar 797F,$5 Million,Truck,caterpillar_797f.png
+Komatsu 980E-4,$4.5 Million,Truck,komatsu_980e4.png
+Caterpillar D11,$2.2 Million,Machine,caterpillar_d11.png
+Komatsu PC8000,$10 Million,Machine,komatsu_pc8000.png
+Liebherr LTM 11200-9.1,$14 Million,Machine,liebherr_ltm_11200_91.png
+John Deere 9RX,$0.6 Million,Machine,john_deere_9rx.png
+M1A2 Abrams,$9 Million,Tank,m1a2_abrams.png
+Leopard 2A7,$10 Million,Tank,leopard_2a7.png
+T-90,$4.5 Million,Tank,t90.png
+Challenger 2,$8.5 Million,Tank,challenger_2.png
+Type 212 Submarine,$500 Million,Submarine,type_212_submarine.png
+Virginia-class Submarine,$3.5 Billion,Submarine,virginia_class_submarine.png
+Ohio-class Submarine,$2 Billion,Submarine,ohio_class_submarine.png
+Los Angeles-class Submarine,$1.8 Billion,Submarine,los_angeles_class_submarine.png
+USS Arleigh Burke,$2 Billion,Ship,uss_arleigh_burke.png
+USS Gerald R. Ford,$13 Billion,Ship,uss_gerald_r_ford.png
+HMS Queen Elizabeth,$4 Billion,Ship,hms_queen_elizabeth.png
+Nimitz-class Aircraft Carrier,$8.5 Billion,Ship,nimitz_class_aircraft_carrier.png
+Goodyear Blimp,$0.25 Million,Blimp,goodyear_blimp.png
+Airlander 10,$40 Million,Blimp,airlander_10.png
