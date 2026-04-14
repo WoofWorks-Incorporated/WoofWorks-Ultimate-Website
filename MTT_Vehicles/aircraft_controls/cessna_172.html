@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cessna 172 - Flight Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        .cockpit-panel {
+            background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+            border: 4px solid #333;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        /* Custom Toggle Switch Style */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 60px;
+        }
+
+        .switch input { display: none; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .2s;
+            border-radius: 4px;
+            border: 2px solid #444;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 32px;
+            left: 2px;
+            bottom: 4px;
+            background-color: #666;
+            transition: .2s;
+            border-radius: 2px;
+            box-shadow: 0 4px 0 #222;
+        }
+
+        input:checked + .slider { background-color: #444; }
+        input:checked + .slider:before {
+            transform: translateY(-28px);
+            background-color: #f87171; /* Master Red */
+            box-shadow: 0 -4px 0 #222;
+        }
+
+        input:checked + .light-slider:before {
+            background-color: #fbbf24; /* Yellow for lights */
+        }
+
+        /* Range Input Styling */
+        input[type=range] {
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #94a3b8;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid #475569;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #222;
+            box-shadow: inset 0 0 2px black;
+        }
+
+        .indicator.active {
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+        }
+
+        .help-btn {
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .help-btn:hover {
+            color: #94a3b8;
+        }
+
+        /* Modal Overlay */
+        #helpModal {
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+    </style>
+</head>
+<body class="p-4 flex justify-center items-start min-h-screen">
+
+    <div class="cockpit-panel max-w-4xl w-full p-6 rounded-xl shadow-2xl">
+        <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+            <div>
+                <h1 class="text-2xl font-bold tracking-wider text-gray-100">CESSNA 172S</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Skyhawk Performance Panel</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-gray-400 mb-1">ENGINE STATUS</div>
+                <div id="engineStatus" class="px-3 py-1 bg-black rounded text-red-500 font-mono text-sm border border-red-900/50">OFF</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- COLUMN 1: PRIMARY SYSTEMS -->
+            <div class="space-y-4">
+                <div class="control-group">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-gray-400 uppercase">Power & Mix</span>
+                        <button onclick="showHelp('Throttle: Manage engine RPM. Mixture: Fuel/Air ratio. Lean at high altitudes.')" class="help-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.01.388-1.01.94"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1"><span>THROTTLE</span><span id="throttleVal">0%</span></div>
+                            <input type="range" id="throttle" min="0" max="100" value="0" oninput="updateVal('throttle', this.value)">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1"><span>MIXTURE</span><span id="mixtureVal">100%</span></div>
+                            <input type="range" id="mixture" min="0" max="100" value="100" class="accent-red-500" oninput="updateVal('mixture', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="text-xs font-bold text-gray-400 uppercase block mb-3">Flaps & Trim</span>
+                    <div class="flex items-center gap-4">
+                        <select id="flaps" class="bg-gray-800 text-sm p-2 rounded border border-gray-600 w-full outline-none focus:border-blue-500">
+                            <option value="0">UP (0°)</option>
+                            <option value="10">10°</option>
+                            <option value="20">20°</option>
+                            <option value="30">FULL (30°)</option>
+                        </select>
+                        <div class="flex flex-col gap-1">
+                            <button class="bg-gray-700 hover:bg-gray-600 p-1 rounded text-[10px]" onclick="notif('Trim Nose Up')">UP</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 p-1 rounded text-[10px]" onclick="notif('Trim Nose Down')">DN</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: ENGINE & ELECTRICS -->
+            <div class="space-y-4">
+                <div class="control-group">
+                    <span class="text-xs font-bold text-gray-400 uppercase block mb-3">Ignition & Fuel</span>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between bg-black/40 p-2 rounded">
+                            <label class="text-xs">MAGS</label>
+                            <select id="mags" class="bg-transparent text-sm outline-none text-blue-400 font-mono">
+                                <option>OFF</option>
+                                <option>LEFT</option>
+                                <option>RIGHT</option>
+                                <option selected>BOTH</option>
+                                <option>START</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between bg-black/40 p-2 rounded">
+                            <label class="text-xs">FUEL</label>
+                            <select id="fuel" class="bg-transparent text-sm outline-none text-blue-400 font-mono">
+                                <option>OFF</option>
+                                <option>LEFT</option>
+                                <option>RIGHT</option>
+                                <option selected>BOTH</option>
+                            </select>
+                        </div>
+                        <button id="startBtn" onclick="toggleEngine()" class="w-full py-2 bg-red-900/20 border border-red-500/50 text-red-500 rounded font-bold text-sm hover:bg-red-500 hover:text-white transition">
+                            ENG START / STOP
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="text-xs font-bold text-gray-400 uppercase block mb-3">Master Switches</span>
+                    <div class="flex justify-around items-center">
+                        <div class="text-center">
+                            <label class="switch">
+                                <input type="checkbox" id="masterBat" onchange="toggleMaster()">
+                                <span class="slider"></span>
+                            </label>
+                            <div class="text-[9px] mt-1 font-bold">BAT</div>
+                        </div>
+                        <div class="text-center">
+                            <label class="switch">
+                                <input type="checkbox" id="masterAlt" onchange="toggleMaster()">
+                                <span class="slider"></span>
+                            </label>
+                            <div class="text-[9px] mt-1 font-bold">ALT</div>
+                        </div>
+                        <div class="text-center">
+                            <label class="switch">
+                                <input type="checkbox" id="avionics" onchange="notif('Avionics Toggled')">
+                                <span class="slider !before:bg-blue-500"></span>
+                            </label>
+                            <div class="text-[9px] mt-1 font-bold">AVNS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: LIGHTS & BRAKES -->
+            <div class="space-y-4">
+                <div class="control-group">
+                    <span class="text-xs font-bold text-gray-400 uppercase block mb-3">Exterior Lighting</span>
+                    <div class="grid grid-cols-3 gap-4 justify-items-center">
+                        <div class="text-center">
+                            <div class="indicator mx-auto mb-1" id="ind-bcn"></div>
+                            <label class="switch">
+                                <input type="checkbox" onchange="toggleLight('bcn', this)">
+                                <span class="slider light-slider"></span>
+                            </label>
+                            <div class="text-[8px] mt-1">BCN</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="indicator mx-auto mb-1" id="ind-land"></div>
+                            <label class="switch">
+                                <input type="checkbox" onchange="toggleLight('land', this)">
+                                <span class="slider light-slider"></span>
+                            </label>
+                            <div class="text-[8px] mt-1">LAND</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="indicator mx-auto mb-1" id="ind-nav"></div>
+                            <label class="switch">
+                                <input type="checkbox" onchange="toggleLight('nav', this)">
+                                <span class="slider light-slider"></span>
+                            </label>
+                            <div class="text-[8px] mt-1">NAV</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <span class="text-xs font-bold text-gray-400 uppercase block mb-3">Braking System</span>
+                    <div class="flex gap-2">
+                        <button class="flex-1 bg-gray-800 border border-gray-600 py-4 rounded active:bg-gray-600 text-[10px]" onmousedown="notif('Left Brake Applied')" onmouseup="notif('Left Brake Released')">LEFT</button>
+                        <button class="flex-1 bg-gray-800 border border-gray-600 py-4 rounded active:bg-gray-600 text-[10px]" onmousedown="notif('Right Brake Applied')" onmouseup="notif('Right Brake Released')">RIGHT</button>
+                    </div>
+                    <button id="parkBrake" onclick="toggleParkBrake()" class="w-full mt-2 py-1 bg-gray-900 border border-gray-700 rounded text-red-700 font-bold text-[10px]">PARK BRAKE SET</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER: MOVEMENT MAPPING -->
+        <div class="mt-6 flex gap-4 overflow-x-auto pb-2">
+            <div class="flex-shrink-0 px-4 py-2 bg-black/30 rounded border border-gray-800 text-center">
+                <div class="text-[10px] text-gray-500 mb-1">AILERON</div>
+                <div class="flex gap-1">
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">L</button>
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">R</button>
+                </div>
+            </div>
+            <div class="flex-shrink-0 px-4 py-2 bg-black/30 rounded border border-gray-800 text-center">
+                <div class="text-[10px] text-gray-500 mb-1">ELEVATOR</div>
+                <div class="flex gap-1">
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">↑</button>
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">↓</button>
+                </div>
+            </div>
+            <div class="flex-shrink-0 px-4 py-2 bg-black/30 rounded border border-gray-800 text-center">
+                <div class="text-[10px] text-gray-500 mb-1">RUDDER</div>
+                <div class="flex gap-1">
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">←</button>
+                    <button class="w-8 h-8 bg-gray-700 rounded hover:bg-gray-600">→</button>
+                </div>
+            </div>
+            <div id="toast" class="flex-grow self-center text-sm font-mono text-green-500 text-right opacity-0 transition-opacity uppercase tracking-tighter">
+                System Ready...
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 border-2 border-blue-500 p-6 rounded-lg max-w-sm shadow-2xl">
+            <h2 class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/></svg>
+                PILOT ASSIST
+            </h2>
+            <p id="helpText" class="text-sm text-gray-300 mb-6 leading-relaxed"></p>
+            <button onclick="closeHelp()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold transition">UNDERSTOOD</button>
+        </div>
+    </div>
+
+    <script>
+        let isEngineRunning = false;
+        let isParkBrakeSet = true;
+        let toastTimeout;
+
+        function updateVal(id, val) {
+            document.getElementById(id + 'Val').innerText = val + '%';
+            if(id === 'throttle' && val > 0 && !isEngineRunning) {
+                notif('Warning: Engine is off');
+            }
+        }
+
+        function toggleMaster() {
+            const bat = document.getElementById('masterBat').checked;
+            const alt = document.getElementById('masterAlt').checked;
+            
+            if (!bat) {
+                // Shut down lights if battery off
+                document.querySelectorAll('.indicator').forEach(el => el.classList.remove('active'));
+                notif('Master Battery OFF - Electrical Loss');
+            } else {
+                notif('Master Battery ON');
+            }
+        }
+
+        function toggleLight(type, el) {
+            const bat = document.getElementById('masterBat').checked;
+            const indicator = document.getElementById('ind-' + type);
+            
+            if (bat && el.checked) {
+                indicator.classList.add('active');
+                notif(`${type.toUpperCase()} Light ON`);
+            } else {
+                indicator.classList.remove('active');
+                if(!bat && el.checked) notif('No Power to Lights');
+            }
+        }
+
+        function toggleEngine() {
+            const bat = document.getElementById('masterBat').checked;
+            const fuel = document.getElementById('fuel').value;
+            const status = document.getElementById('engineStatus');
+            const startBtn = document.getElementById('startBtn');
+
+            if (isEngineRunning) {
+                isEngineRunning = false;
+                status.innerText = "OFF";
+                status.className = "px-3 py-1 bg-black rounded text-red-500 font-mono text-sm border border-red-900/50";
+                notif('Engine Shutdown');
+            } else {
+                if (!bat) {
+                    notif('Failed: No Battery Power');
+                    return;
+                }
+                if (fuel === 'OFF') {
+                    notif('Failed: No Fuel Flow');
+                    return;
+                }
+                
+                isEngineRunning = true;
+                status.innerText = "RUNNING";
+                status.className = "px-3 py-1 bg-black rounded text-green-500 font-mono text-sm border border-green-900/50 shadow-[0_0_10px_rgba(34,197,94,0.3)]";
+                notif('Engine Start Successful');
+            }
+        }
+
+        function toggleParkBrake() {
+            isParkBrakeSet = !isParkBrakeSet;
+            const btn = document.getElementById('parkBrake');
+            if (isParkBrakeSet) {
+                btn.innerText = "PARK BRAKE SET";
+                btn.classList.add('text-red-700');
+                btn.classList.remove('text-gray-600');
+                notif('Parking Brake Set');
+            } else {
+                btn.innerText = "PARK BRAKE RELEASED";
+                btn.classList.remove('text-red-700');
+                btn.classList.add('text-gray-600');
+                notif('Parking Brake Released');
+            }
+        }
+
+        function notif(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = "> " + msg;
+            toast.style.opacity = '1';
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function showHelp(text) {
+            document.getElementById("helpText").innerText = text;
+            document.getElementById("helpModal").style.display = "flex";
+        }
+
+        function closeHelp() {
+            document.getElementById("helpModal").style.display = "none";
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById("helpModal");
+            if (event.target == modal) {
+                closeHelp();
+            }
+        }
+    </script>
+</body>
+</html>
